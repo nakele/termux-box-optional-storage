@@ -110,7 +110,7 @@ if [ "$negus" = "" ]; then
     echo ""
     echo "Select containerization method"
     echo "1) Proot"
-    echo "2) Chroot (root only - not available)"
+    echo "2) Chroot (root only - not available in this version)"
     read oleg
 elif [ "$negus" = "proot" ]; then
     oleg=1
@@ -124,7 +124,7 @@ case $oleg in
     ./start-proot.sh
     ;;
 2)
-    echo "Croot selected, stopping"
+    echo "Chroot selected, stopping execution"
     #echo "chroot">ubuntu-fs/opt/script.conf
     #No need for chroot
     #sudo chown -hR root:root ubuntu-fs/root

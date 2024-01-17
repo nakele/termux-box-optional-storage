@@ -29,10 +29,15 @@ apt-get -y --with-new-pkgs -o Dpkg::Options::="--force-confdef" upgrade >/dev/nu
 
 echo ""
 echo "Installing necessary packages"
+echo "x11-repo"
 pkg install x11-repo -y &>/dev/null
+echo "pulseaudio"
 pkg install pulseaudio -y &>/dev/null
+echo "xwayland"
 pkg install xwayland -y &>/dev/null
+echo "proot"
 pkg install proot -y &>/dev/null
+echo "wget"
 pkg install wget -y &>/dev/null
 #do we really need the root-repo if we run it in proot for safety?
 #pkg install tsu -y &>/dev/null
@@ -88,7 +93,7 @@ tar -xf patch.tar.xz
 rm -rf patch.tar.xz
 cd
 
-echo "Starting termux-box now. Next time use .termux-box.sh command to run it."
+echo "Starting termux-box now. Next time use ./termux-box.sh command to run it."
 sleep 2
 
 #what's this?
