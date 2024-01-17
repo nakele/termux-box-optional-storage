@@ -63,14 +63,14 @@ else
         echo -n "A new patch is available! Do you want to install it? (Y/n) "
         read sel
         if [ "$sel" = "Y" ] || [ "$sel" = "y" ]; then
-            curl -s -o ~/y https://raw.githubusercontent.com/olegos2/termux-box/main/scripts/patch
+            curl -s -o ~/y https://raw.githubusercontent.com/nakele/termux-box-optional-storage/main/scripts/patch
             chmod +x ~/y
             if ! ~/y; then
             echo "Update failed. If this problem remains, try to force stop termux"
             exit
             fi
             echo "$latestupdate">~/termux-box/update-timestamp
-            exec $PREFIX/bin/termux-box
+            exec $HOME/termux-box.sh
         else
             echo "Update was not installed"
         fi
@@ -79,33 +79,44 @@ fi
 
 sleep 0.5
 
-if [ ! -L $HOME/termux-box/ubuntu-fs/opt/prefix-tweaks/dosdevices/f: ]; then
-    ln -s /external/Download $HOME/termux-box/ubuntu-fs/opt/prefix-tweaks/dosdevices/f:
-fi
+#don't need link to external storage
+#if [ ! -L $HOME/termux-box/ubuntu-fs/opt/prefix-tweaks/dosdevices/f: ]; then
+#    ln -s /external/Download $HOME/termux-box/ubuntu-fs/opt/prefix-tweaks/dosdevices/f:
+#fi
 
 cd $HOME/termux-box
 touch ubuntu-fs/root/.hushlogin
-mkdir -p /sdcard/Android/data/com.termux/files/Download &>/dev/null
-mkdir -p ubuntu-fs/external &>/dev/null
+#Dont need link to external storage
+#mkdir -p /sdcard/Android/data/com.termux/files/Download &>/dev/null
+#mkdir -p ubuntu-fs/external &>/dev/null
 termux-x11 :1 &>/dev/null &
 rm -rf $PREFIX/tmp/pulse-*
 pulseaudio -k >/dev/null 2>&1
 pulseaudio --start --load="module-native-protocol-tcp auth-ip-acl=127.0.0.1 auth-anonymous=1" --exit-idle-time=-1
 
-mkdir /sdcard/termux-box >/dev/null 2>&1
-cp -n ubuntu-fs/opt/Env.conf /sdcard/termux-box >/dev/null 2>&1
-cp -n ubuntu-fs/opt/dxvk.conf /sdcard/termux-box >/dev/null 2>&1
+#No need for external storage, make it work with local termux home folder
+#mkdir /sdcard/termux-box >/dev/null 2>&1
+#cp -n ubuntu-fs/opt/Env.conf /sdcard/termux-box >/dev/null 2>&1
+#cp -n ubuntu-fs/opt/dxvk.conf /sdcard/termux-box >/dev/null 2>&1
+
+#create folder in HOME called sdcard/termux-box
+mkdir $HOME/sdcard/termux-box >/dev/null 2>&1
+#copy into that folder rather than the external storage
+cp -n ubuntu-fs/opt/Env.conf $HOME/sdcard/termux-box >/dev/null 2>&1
+cp -n ubuntu-fs/opt/dxvk.conf $HOME/sdcard/termux-box >/dev/null 2>&1
+
 negus=$(cat ubuntu-fs/opt/script.conf)
 if [ "$negus" = "" ]; then
     echo ""
     echo "Select containerization method"
     echo "1) Proot"
-    echo "2) Chroot (root only)"
+    echo "2) Chroot (root only - not available)"
     read oleg
 elif [ "$negus" = "proot" ]; then
     oleg=1
 else
-    oleg=2
+    oleg=1
+    echo "You select chroot - but chroot is disabled with this version of termux-box"
 fi
 case $oleg in
 1)
@@ -113,11 +124,13 @@ case $oleg in
     ./start-proot.sh
     ;;
 2)
-    echo "chroot">ubuntu-fs/opt/script.conf
-    sudo chown -hR root:root ubuntu-fs/root
-    sudo ./start-chroot.sh
-    prootuser=$(id -u)
-    sudo chown -hR $prootuser:$prootuser ubuntu-fs
+    echo "Croot selected, stopping"
+    #echo "chroot">ubuntu-fs/opt/script.conf
+    #No need for chroot
+    #sudo chown -hR root:root ubuntu-fs/root
+    #sudo ./start-chroot.sh
+    #prootuser=$(id -u)
+    #sudo chown -hR $prootuser:$prootuser ubuntu-fs
     ;;
 esac
 
@@ -129,5 +142,7 @@ pkill -f "app_process / com.termux.x11"
 
 if [ -e ~/termux-box/ubuntu-fs/opt/restart-termux-box ]; then
     rm -rf ~/termux-box/ubuntu-fs/opt/restart-termux-box
-    exec $0
+    #Not sure what this does so removing it
+    echo "exec $ 0 commented out in termux-box"
+    #exec $0
 fi

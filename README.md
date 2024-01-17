@@ -2,7 +2,7 @@
 
 English
 &nbsp;&nbsp;| &nbsp;&nbsp;
-<a href="https://github.com/olegos2/termux-box/blob/main/README-ru.md">Русский</a>
+<a href="https://github.com/nakele/termux-box-optional-storage/blob/main/README-ru.md">Русский</a>
 
 ## About
 
@@ -20,7 +20,7 @@ Download and install
 Open termux and paste command
 
 ```bash
-curl -s -o x https://raw.githubusercontent.com/olegos2/termux-box/main/install && chmod +x x && ./x
+curl -s -o x https://raw.githubusercontent.com/nakele/termux-box-optional-storage/main/install && chmod +x x && ./x
 ```
 
 ### Additional components
@@ -32,7 +32,7 @@ for dri3 turnip mode.
 ## Configuration
 After installing termux-box some settings and variables can be changed in termux-box/preferences menu.
 To install Vulkan/OpenGL drivers you should start Wine and select Mesa and D3D libs in Start Menu -> Install.
-To change or add environment variables edit config saved in `/sdcard/termux-box/Env.conf`.
+To change or add environment variables edit config saved in `HOME/sdcard/termux-box/Env.conf`.
 
 #
 Big thanks to Hugo for help.

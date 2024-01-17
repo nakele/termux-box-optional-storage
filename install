@@ -2,8 +2,10 @@
 
 cd
 echo ""
-echo "Сlick on allow to proceed"
-termux-setup-storage & sleep 4 &>/dev/null
+#echo "Сlick on allow to proceed"
+#removing request to termux-setup-storage
+#termux-setup-storage & sleep 4 &>/dev/null
+
 
 while true; do
     if [ -e storage ]; then
@@ -11,11 +13,13 @@ while true; do
         break
     else
         echo "If you denied permission, change it manually in termux app settings now"
+        #adding break to get out of loop to check if storage was granted
+        break
     fi
     sleep 2
 done
 
-mkdir -p /sdcard/termux-box
+mkdir -p $HOME/sdcard/termux-box
 
 echo ""
 echo "Updating termux packages"
@@ -30,16 +34,21 @@ pkg install pulseaudio -y &>/dev/null
 pkg install xwayland -y &>/dev/null
 pkg install proot -y &>/dev/null
 pkg install wget -y &>/dev/null
-pkg install tsu -y &>/dev/null
-pkg install root-repo -y &>/dev/null
+#do we really need the root-repo if we run it in proot for safety?
+#pkg install tsu -y &>/dev/null
+#pkg install root-repo -y &>/dev/null
 
 rm -rf $HOME/termux-box
 mkdir -p $HOME/termux-box
 cd $HOME/termux-box
 
-wget https://github.com/olegos2/termux-box/raw/main/components/termux-x11-1.02.07-0-all.deb &>/dev/null
-dpkg -i termux-x11-1.02.07-0-all.deb &>/dev/null
-rm -rf termux-x11-1.02.07-0-all.deb
+#replace downloading this termux-x11 with the original termux-x11, might break in the future
+wget https://github.com/termux/termux-x11/releases/download/nightly/termux-x11-nightly-1.03.00-0-all.deb &>/dev/null
+dpkg -i termux-x11-nightly-1.03.00-0-all.deb &>/dev/null
+rm -rf termux-x11-nightly-1.03.00-0-all.deb
+#wget https://github.com/olegos2/termux-box/raw/main/components/termux-x11-1.02.07-0-all.deb &>/dev/null
+#dpkg -i termux-x11-1.02.07-0-all.deb &>/dev/null
+#rm -rf termux-x11-1.02.07-0-all.deb
 
 echo "Downloading preconfigured Rootfs..."
 cd $HOME/termux-box
@@ -49,22 +58,28 @@ echo "Unzipping Rootfs..."
 tar -xf rootfs.tar.xz
 rm -rf rootfs.tar.xz
 
+#flag
 cd $HOME/termux-box/ubuntu-fs/opt
 wget https://github.com/olegos2/termux-box/raw/main/scripts/scripts.tar.gz &>/dev/null
 tar -xf scripts.tar.gz
 rm -rf scripts.tar.gz
 
 cd $HOME/termux-box/
-wget -N https://github.com/olegos2/termux-box/raw/main/scripts/termux-box &>/dev/null
+wget -N https://github.com/nakele/termux-box-optional-storage/raw/main/scripts/termux-box &>/dev/null
 chmod +x termux-box
-mv termux-box $PREFIX/bin/
-wget -N https://github.com/olegos2/termux-box/raw/main/scripts/start-proot.sh &>/dev/null
-wget -N https://github.com/olegos2/termux-box/raw/main/scripts/start-chroot.sh &>/dev/null
+#Removing this as termux-box can be run from home folder with .termux-box
+#mv termux-box $PREFIX/bin/
+mv termux-box $HOME/termux-box.sh
+wget -N https://github.com/nakele/termux-box-optional-storage/raw/main/scripts/start-proot.sh &>/dev/null
+#Dont need chroot
+#wget -N https://github.com/olegos2/termux-box/raw/main/scripts/start-chroot.sh &>/dev/null
 chmod +x start-proot.sh
-chmod +x start-chroot.sh
+#Dont need chroot
+#chmod +x start-chroot.sh
 
 echo "Installing patch"
 
+#flag
 cd $HOME/termux-box/ubuntu-fs
 wget -q --show-progress https://github.com/olegos2/termux-box/releases/download/0.0.1-alpha/patch.tar.xz
 rm -rf opt/d3d
@@ -73,8 +88,12 @@ tar -xf patch.tar.xz
 rm -rf patch.tar.xz
 cd
 
-echo "Starting termux-box now. Next time use \"termux-box\" command to run it."
+echo "Starting termux-box now. Next time use .termux-box.sh command to run it."
 sleep 2
 
-rm -rf "$0"
-exec $PREFIX/bin/termux-box
+#what's this?
+#rm -rf "$0"
+
+#change this to run the home version
+#exec $PREFIX/bin/termux-box
+exec $HOME/termux-box.sh
