@@ -16,6 +16,7 @@ command+=" --link2symlink -0 -r ubuntu-fs -w /root -b /dev -b /proc -b /sys -b $
 command+=" -b ubuntu-fs/root:/dev/shm"
 #No need to access external storage no termux files from within proot linux
 #command+=" -b /sdcard"
+command+=" -b /storage/emulated/0/termux_shared/:/shared/"
 #command+=" -b /sdcard/Android/data/com.termux/files:/termux"
 
 #No need for secondary storage
